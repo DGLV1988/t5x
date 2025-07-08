@@ -1,0 +1,27 @@
+name: Export T5X d4b9a6f
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout specific commit
+      uses: actions/checkout@v3
+      with:
+        repository: google-research/t5x
+        ref: d4b9a6f
+        fetch-depth: 0
+
+    - name: Create ZIP archive
+      run: |
+        zip -r t5x-d4b9a6f.zip . -x ".git/*"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: t5x-d4b9a6f
+        path: t5x-d4b9a6f.zip
+
