@@ -1,4 +1,4 @@
-name: Export T5X d4b9a6f
+name: export_d4b9a6f
 
 on:
   workflow_dispatch:
@@ -6,23 +6,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout specific commit
-      uses: actions/checkout@v3
-      with:
-        repository: google-research/t5x
-        ref: d4b9a6f
-        fetch-depth: 0
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - name: Create ZIP archive
-      run: |
-        zip -r t5x-d4b9a6f.zip . -x ".git/*"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: t5x-d4b9a6f
-        path: t5x-d4b9a6f.zip
-# Trigger workflow manually via Actions
+      - name: Install dependencies (minimal)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade setuptools wheel
 
+      - name: Create ZIP archive
+        run: |
+          zip -r t5x-d4b9a6f.zip . -x "*.git*" "__pycache__/*" "*.pyc" "*.ipynb_checkpoints*"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: t5x-d4b9a6f
+          path: t5x-d4b9a6f.zip
